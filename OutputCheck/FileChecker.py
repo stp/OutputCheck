@@ -34,7 +34,7 @@ class FileChecker(object):
                     endRegion = self.directives[dIndex +1].match(lines[lineNum:end], lineNum, fileObject.name)
                     
                     # Now invoke the CheckNot directive
-                    checker.match(lines[lineNum:(endRegion -1)], lineNum, fileObject.name)
+                    checker.match(lines[lineNum:endRegion], lineNum, fileObject.name)
 
                     # Assuming everything went okay update lineNum to the region just pass what the
                     # Check directive found
