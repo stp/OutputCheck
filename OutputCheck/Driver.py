@@ -24,9 +24,14 @@ def main(args):
     parser.add_argument('--comment=',type=str, default="", help='Force one line comment value. Default guess from file extension of check_file')
     args = parser.parse_args(args[1:])
 
-    logging.basicConfig(level=getattr(logging,args.log_level.upper(),None), 
-                        format='%(levelname)s:%(module)s.%(funcName)s() : %(message)s')
+    logLevel = getattr(logging,args.log_level.upper(),None)
+    if logLevel == logging.DEBUG:
+        logFormat = '%(levelname)s:%(filename)s:%(lineno)d %(funcName)s()  : %(message)s'
+    else:
+        logFormat = '%(levelname)s: %(message)s'
 
+
+    logging.basicConfig(level=logLevel, format=logFormat)
 
     checkFile = args.check_file
     fileToCheck = getattr(args,'file_to_check=')
