@@ -15,7 +15,7 @@ extensionToCommentSymbolMap = {
     'smt2':';',
 }
 
-class FileWithoutPrefixException(Exception):
+class FileWithoutSuffixException(Exception):
     pass
 
 class UnSupportedFileTypeException(Exception):
@@ -29,7 +29,7 @@ class UnSupportedFileTypeException(Exception):
 def getLineCommentPrefix(fileName):
     m = re.search(r'\.(.+)$',fileName)
     if not m:
-        raise FileWithoutPrefixException()
+        raise FileWithoutSuffixException()
     else:
         suffix = m.group(1)
 

@@ -23,7 +23,7 @@ def enum(*sequential, **named):
 ExitCode = enum('SUCCESS',
                 'PARSE_ERROR',
                 'DIRECTIVE_FAIL',
-                'FILE_WITHOUT_PREFIX',
+                'FILE_WITHOUT_SUFFIX',
                 'UNSUPPORTED_FILE_TYPE',
                 'USER_EXIT'
                )
@@ -71,10 +71,10 @@ def main(args):
     except Directives.DirectiveException as e:
         _logger.error(e)
         return ExitCode.DIRECTIVE_FAIL
-    except CommentPrefixes.FileWithoutPrefixException as e:
+    except CommentPrefixes.FileWithoutSuffixException as e:
         _logger.error("Check file '{file}' is missing a file extension".format(file=checkFile.name))
         _logger.info('If you know what symbols are used for one line comments then use the --comment= flag')
-        return ExitCode.FILE_WITHOUT_PREFIX
+        return ExitCode.FILE_WITHOUT_SUFFIX
     except CommentPrefixes.UnSupportedFileTypeException as e:
         _logger.error(e)
         _logger.info('If you know what symbols are used for one line comments then use the --comment= flag')
