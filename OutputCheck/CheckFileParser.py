@@ -1,8 +1,8 @@
 import collections
 import logging
 import pprint
-import Directives
 import re
+# Cannot import Directives here due to circular dependencies
 
 _logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class ParsingException(Exception):
         super(self.__class__,self).__init__(msg)
 
     def __str__(self):
-        return str(self.__class__.__name__) + ": " + self.message
+        return str(self.__class__.__name__) + ": " + self.args[0]
 
 class CheckFileParser:
     def  __init__(self, checkPrefix, lineCommentPrefix):
@@ -35,7 +35,8 @@ class CheckFileParser:
         directives = []
 
         # Try to find Directives dynamically
-        for (name,object) in Directives.__dict__.iteritems():
+        from . import Directives
+        for (name,object) in Directives.__dict__.items():
             if not inspect.isclass(object):
                 continue
 
@@ -53,7 +54,7 @@ class CheckFileParser:
         _logger.debug('Found directives:\n{}'.format(pprint.pformat(self.directives)))
 
     def parse(self, checkFile):
-        
+        from . import Directives
         directiveObjects = []
 
         lineNumber=1

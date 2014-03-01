@@ -1,7 +1,6 @@
 import collections
 import logging
-import CheckFileParser
-import FileChecker
+from . import CheckFileParser
 import re
 
 _logger = logging.getLogger(__name__)
@@ -103,7 +102,7 @@ class CheckNext(Directive):
             raise DirectiveException(self)
         else:
             self.matchLocation = self.expectedMatchLocation
-            logging.debug('Found match for {pattern} at {location}'.format(pattern=self.regex.pattern, location=self.matchLocation))
+            _logger.debug('Found match for {pattern} at {location}'.format(pattern=self.regex.pattern, location=self.matchLocation))
 
     def getErrorMessage(self):
         return 'Could not find a match for {directive} expected at {location}'.format(directive=str(self), location=self.expectedMatchLocation)

@@ -7,10 +7,10 @@ import os
 import argparse
 import re
 import logging
-import CheckFileParser
-import FileChecker
-import Directives
-import CommentPrefixes
+from . import CheckFileParser
+from . import Directives
+from . import FileChecker
+from . import CommentPrefixes
 
 _logger = logging.getLogger(__name__)
 

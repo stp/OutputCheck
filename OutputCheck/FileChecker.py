@@ -1,6 +1,5 @@
 import logging
-import CheckFileParser
-import Directives
+from . import Directives
 
 _logger = logging.getLogger(__name__)
 
