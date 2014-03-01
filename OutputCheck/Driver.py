@@ -14,6 +14,21 @@ from . import CommentPrefixes
 
 _logger = logging.getLogger(__name__)
 
+def enum(*sequential, **named):
+    enums = dict(zip(sequential, range(len(sequential))), **named)
+    reverse = dict((value, key) for key, value in enums.iteritems())
+    enums['reverse_mapping'] = reverse
+    return type('Enum', (), enums)
+
+ExitCode = enum('SUCCESS',
+                'PARSE_ERROR',
+                'DIRECTIVE_FAIL',
+                'FILE_WITHOUT_PREFIX',
+                'UNSUPPORTED_FILE_TYPE',
+                'USER_EXIT'
+               )
+
+
 
 def main(args):
     parser = argparse.ArgumentParser(description=__doc__)
@@ -52,19 +67,19 @@ def main(args):
         FC.check(fileToCheck)
     except CheckFileParser.ParsingException as e:
         _logger.error(e)
-        return 1
+        return ExitCode.PARSE_ERROR
     except Directives.DirectiveException as e:
         _logger.error(e)
-        return 1
+        return ExitCode.DIRECTIVE_FAIL
     except CommentPrefixes.FileWithoutPrefixException as e:
         _logger.error("Check file '{file}' is missing a file extension".format(file=checkFile.name))
         _logger.info('If you know what symbols are used for one line comments then use the --comment= flag')
-        return 1
+        return ExitCode.FILE_WITHOUT_PREFIX
     except CommentPrefixes.UnSupportedFileTypeException as e:
         _logger.error(e)
         _logger.info('If you know what symbols are used for one line comments then use the --comment= flag')
-        return 1
+        return ExitCode.UNSUPPORTED_FILE_TYPE
     except KeyboardInterrupt as e:
-        return 1
+        return ExitCode.USER_EXIT
 
-    return 0
+    return ExitCode.SUCCESS
