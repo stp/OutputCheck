@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
+import version
 
 long_description="""
 *OutputCheck*
@@ -22,7 +23,7 @@ Documentation and source code can be found at http://github.com/delcypher/Output
 """
 
 setup(name='OutputCheck',
-      version='0.1',
+      version=version.get_git_version(),
       description='',
       author='Daniel Liew',
       author_email='delcypher@gmail.com',
