@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # vim: set sw=2 ts=4 softabstop=4 expandtab
 """
-Output checker inspired by LLVM's FileCheck
+Output checker inspired by LLVM's FileCheck.
+
+See https://github.com/delcypher/OutputCheck for documentation.
 """
 import os
 import argparse
