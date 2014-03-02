@@ -24,7 +24,7 @@ Documentation and source code can be found at http://github.com/delcypher/Output
 
 setup(name='OutputCheck',
       version=version.get_git_version(),
-      description='',
+      description="A tool for checking the output of console programs inspired by LLVM's FileCheck",
       author='Daniel Liew',
       author_email='delcypher@gmail.com',
       url='http://github.com/delcypher/OutputCheck',
