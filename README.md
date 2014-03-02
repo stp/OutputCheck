@@ -230,6 +230,7 @@ int main()
 ```
 $ cc BrokenHelloWorld3.c -o BrokenHelloWorld3
 $ ./BrokenHelloWorld3 | OutputCheck BrokenHelloWorld3.c
+ERROR: Found a match for CheckNot Directive (BrokenHelloWorld3.c:8 : Pattern: 'Testing') in <stdin>:2
 ```
 
 Tests
