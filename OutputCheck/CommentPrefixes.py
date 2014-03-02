@@ -27,7 +27,7 @@ class UnSupportedFileTypeException(Exception):
         return 'The file extension "{ext}" is not supported.'.format(ext=self.suffix)
 
 def getLineCommentPrefix(fileName):
-    m = re.search(r'\.(.+)$',fileName)
+    m = re.search(r'\.(\w+)$',fileName)
     if not m:
         raise FileWithoutSuffixException()
     else:
