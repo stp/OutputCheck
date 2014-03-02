@@ -12,6 +12,43 @@ This tool was originally written for [STP](http://github.com/stp/stp)
 but it ended up being a very useful tool for other projects so it
 became its own project!
 
+Obtaining OutputCheck
+=====================
+
+OutputCheck can be obtained in multple ways.
+
+Cloning Git repository
+----------------------
+
+```
+$ git clone https://github.com/delcypher/OutputCheck.git
+```
+
+the tool can now be run as
+
+```
+$ cd OutputCheck/
+$ bin/OutputCheck --help
+```
+
+Installing PyPi package
+-----------------------
+
+The tool is [available](https://pypi.python.org/pypi/OutputCheck/) in the [Python package index](https://pypi.python.org/pypi). It can be installed using the ``pip`` tool.
+
+```
+$ pip install OutputCheck
+```
+
+the tool can now be run as
+
+```
+$ OutputCheck --help
+```
+
+Please note that this package may not be up to date.
+
+It is recommended that you use [virtualenv](http://www.virtualenv.org/en/latest/) in conjunction with ``pip`` so that you do not need to install python packages as root.
 
 Check Directives
 ================
