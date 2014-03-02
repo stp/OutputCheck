@@ -1,6 +1,8 @@
 OutputCheck
 ===========
 
+[![Build Status](https://travis-ci.org/delcypher/OutputCheck.png?branch=master)](https://travis-ci.org/delcypher/OutputCheck)
+
 OutputCheck is a tool for checking the output of console programs
 that is inspired by the FileCheck tool used by LLVM. It has its own
 small language (Check Directives) for describing the expected output of 
