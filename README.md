@@ -1,7 +1,7 @@
 OutputCheck
 ===========
 
-[![Build Status](https://travis-ci.org/delcypher/OutputCheck.png?branch=master)](https://travis-ci.org/delcypher/OutputCheck)
+[![Build Status](https://travis-ci.org/stp/OutputCheck.png?branch=master)](https://travis-ci.org/stp/OutputCheck)
 
 OutputCheck is a tool for checking the output of console programs
 that is inspired by the FileCheck tool used by LLVM. It has its own
@@ -21,7 +21,7 @@ Cloning Git repository
 ----------------------
 
 ```
-$ git clone https://github.com/delcypher/OutputCheck.git
+$ git clone https://github.com/stp/OutputCheck.git
 ```
 
 the tool can now be run as
