@@ -3,7 +3,7 @@
 """
 Output checker inspired by LLVM's FileCheck.
 
-See https://github.com/delcypher/OutputCheck for documentation.
+See https://github.com/stp/OutputCheck for documentation.
 """
 import os
 import argparse

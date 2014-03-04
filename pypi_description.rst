@@ -13,4 +13,4 @@ is considerably more convenient and more powerful than GNU ``grep``.
 Documentation and Source
 ========================
 
-Documentation and source code can be found at http://github.com/delcypher/OutputCheck
+Documentation and source code can be found at https://github.com/stp/OutputCheck
