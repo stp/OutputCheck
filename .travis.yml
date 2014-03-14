@@ -3,8 +3,8 @@ python:
     - "2.7"
     - "3.2"
     - "3.3"
+install:
+    - "pip install lit>=0.3.0"
 script:
-    # Get hold of latest llvm-lit (FIXME: lit in pypi needs fixing so we can just use that instead)
-    - git clone --depth=1 https://github.com/delcypher/llvm-lit.git
     # Run tests
-    - llvm-lit/lit.py -v tests/
+    - lit -v tests/
