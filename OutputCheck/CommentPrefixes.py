@@ -5,12 +5,12 @@ used for one-line comments.
 import re
 
 extensionToCommentSymbolMap = {
-    'sh':'#',
-    'cvc':'%',
     'c':'//',
     'cpp':'//',
+    'cvc':'%',
     'cxx':'//',
     'py':'#',
+    'sh':'#',
     'smt':';',
     'smt2':';',
 }
