@@ -5,6 +5,7 @@ used for one-line comments.
 import re
 
 extensionToCommentSymbolMap = {
+    'bpl':'//',
     'c':'//',
     'cpp':'//',
     'cvc':'%',
