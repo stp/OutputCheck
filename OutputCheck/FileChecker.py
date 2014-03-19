@@ -6,9 +6,11 @@ _logger = logging.getLogger(__name__)
 class FileChecker(object):
     def __init__(self, directiveList):
         self.directives = directiveList
+        self.inputLines = None
 
     def check(self, fileObject):
         lines = fileObject.readlines()
+        self.inputLines = lines
        
         lineNum=0 # Starts from 0
         end = len(lines)
@@ -52,3 +54,5 @@ class FileChecker(object):
                     
             dIndex += 1
 
+    def getInput(self):
+        return self.inputLines
