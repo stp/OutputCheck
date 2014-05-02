@@ -10,8 +10,11 @@ class FileChecker(object):
 
     def check(self, fileObject):
         lines = fileObject.readlines()
+
+        # Filter out line ending characters
+        lines = list(map( lambda line: line.strip('\r\n'), lines))
         self.inputLines = lines
-       
+
         lineNum=0 # Starts from 0
         end = len(lines)
 
