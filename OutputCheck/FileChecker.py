@@ -22,7 +22,7 @@ class FileChecker(object):
         while dIndex < len(self.directives):
             checker = self.directives[dIndex]
 
-            if isinstance(checker, Directives.Check):
+            if isinstance(checker, Directives.Check) or isinstance(checker, Directives.CheckLiteral):
                 offset = checker.match(lines[lineNum:end], lineNum, fileObject.name)
                 lineNum = min(offset +1, end) # Start next search from next line
             elif isinstance(checker, Directives.CheckNot):
@@ -33,11 +33,11 @@ class FileChecker(object):
                 if dIndex + 1 == len(self.directives):
                     # This is the last directive
                     checker.match(lines[lineNum:end], lineNum, fileObject.name)
-                elif isinstance( self.directives[dIndex +1], Directives.Check ):
+                elif isinstance( self.directives[dIndex +1], Directives.Check ) or isinstance( self.directives[dIndex +1], Directives.CheckLiteral):
                     # We need to invoke the subsequent Check directive to find
                     # the region we should use for CheckNot
                     endRegion = self.directives[dIndex +1].match(lines[lineNum:end], lineNum, fileObject.name)
-                    
+
                     # Now invoke the CheckNot directive
                     checker.match(lines[lineNum:endRegion], lineNum, fileObject.name)
 
@@ -54,7 +54,7 @@ class FileChecker(object):
                 lineNum = min(lineNum +1, end)
             else:
                 raise Exception('Directiive {} unsupported'.format(directive))
-                    
+
             dIndex += 1
 
     def getInput(self):

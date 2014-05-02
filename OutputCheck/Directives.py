@@ -13,6 +13,20 @@ class DirectiveException(Exception):
         return self.directive.getErrorMessage()
 
 class Directive(object):
+    def getName(self):
+        return self.__class__.__name__
+
+    def getErrorMessage(self):
+        raise NotImplementedError()
+
+    def match(self, subsetLines, subsetOffset, fileName):
+        """
+            Search through lines for match.
+            What is returned is defined by implementations
+        """
+        raise NotImplementedError()
+
+class RegexDirective(Directive):
     def __init__(self, pattern, sourceLocation):
         if not isinstance(pattern,str):
             raise Exception('Arg must be a string')
@@ -35,21 +49,30 @@ class Directive(object):
         s += "{file}:{line} Pattern: '{Regex}')".format(file=self.sourceLocation.fileName, line=self.sourceLocation.lineNumber, Regex=self.regex.pattern)
         return s
 
-    def getName(self):
-        return self.__class__.__name__
 
-    def getErrorMessage(self):
-        raise NotImplementedError()
+class LiteralDirective(Directive):
+    def __init__(self, literal, sourceLocation):
+        if not isinstance(literal,str):
+            raise Exception('literal must be a string')
 
-    def match(self, subsetLines, subsetOffset, fileName):
-        """
-            Search through lines for match.
-            What is returned is defined by implementations
-        """
-        raise NotImplementedError()
+        if not isinstance(sourceLocation, CheckFileParser.FileLocation):
+            raise Exception('sourceLocation must be a FileLocation')
+
+        self.literal = literal
+        if len(self.literal) == 0:
+            raise CheckFileParser.ParsingException("Literal cannot be empty {location}".format(location=sourceLocation))
+
+        self.sourceLocation = sourceLocation
+        self.matchLocation = None
+        self.failed = False
+
+    def __str__(self):
+        s = self.getName() + ' Directive ('
+        s += "{file}:{line} Literal: '{literal}')".format(file=self.sourceLocation.fileName, line=self.sourceLocation.lineNumber, literal=self.literal)
+        return s
 
 
-class Check(Directive):
+class Check(RegexDirective):
     @staticmethod
     def directiveToken():
         return ':'
@@ -84,7 +107,42 @@ class Check(Directive):
         """
         pass
 
-class CheckNext(Directive):
+class CheckLiteral(LiteralDirective):
+    @staticmethod
+    def directiveToken():
+        return '-L:'
+
+    def match(self, subsetLines, offsetOfSubset, fileName):
+        """
+            Search through lines for match.
+            Raise an Exception if fail to match
+            If match is succesful return the position the match was found
+        """
+
+        for (offset,l) in enumerate(subsetLines):
+            column = l.find(self.literal)
+            if column != -1:
+                truePosition = offset + offsetOfSubset
+                _logger.debug('Found match on line {}, col {}'.format(str(truePosition+ 1), column))
+                _logger.debug('Line is {}'.format(l))
+                self.matchLocation = CheckFileParser.FileLocation(fileName, truePosition +1)
+                return truePosition
+
+        # No Match found
+        self.failed = True
+        raise DirectiveException(self)
+
+    def getErrorMessage(self):
+        return 'Could not find a match for {}'.format(str(self))
+
+    @staticmethod
+    def validate(directiveList):
+        """
+            No special validation is needed here.
+        """
+        pass
+
+class CheckNext(RegexDirective):
     @staticmethod
     def directiveToken():
         return '-NEXT:'
@@ -129,7 +187,7 @@ class CheckNext(Directive):
                                                                 bad=before)
                                                               )
 
-class CheckNot(Directive):
+class CheckNot(RegexDirective):
     RegexLocationTuple = collections.namedtuple('RegexLocationTuple',['Regex','SourceLocation'])
     def __init__(self, pattern, sourceLocation):
         if not isinstance(pattern,str):
