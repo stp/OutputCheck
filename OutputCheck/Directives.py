@@ -100,13 +100,6 @@ class Check(RegexDirective):
     def getErrorMessage(self):
         return 'Could not find a match for {}'.format(str(self))
 
-    @staticmethod
-    def validate(directiveList):
-        """
-            No special validation is needed here.
-        """
-        pass
-
 class CheckLiteral(LiteralDirective):
     @staticmethod
     def directiveToken():
@@ -135,13 +128,6 @@ class CheckLiteral(LiteralDirective):
     def getErrorMessage(self):
         return 'Could not find a match for {}'.format(str(self))
 
-    @staticmethod
-    def validate(directiveList):
-        """
-            No special validation is needed here.
-        """
-        pass
-
 class CheckNext(RegexDirective):
     @staticmethod
     def directiveToken():
@@ -165,27 +151,6 @@ class CheckNext(RegexDirective):
     def getErrorMessage(self):
         return 'Could not find a match for {directive} expected at {location}'.format(directive=str(self), location=self.expectedMatchLocation)
 
-    @staticmethod
-    def validate(directiveList):
-        """
-            We should enforce that every CHECK-NEXT directive in the list (apart from if it
-            is the first directive) should have a CHECK or CHECK-NEXT before it.
-
-            * CHECK-NEXT is the first directive
-            * CHECK-NEXT either has a CHECK or a CHECK-NEXT before it
-
-        """
-        for (index,directive) in enumerate(directiveList):
-            if isinstance(directive, CheckNext):
-                if index > 0:
-                    before = directiveList[index -1]
-                    if not (isinstance(before, CheckNext) or isinstance(before, Check)):
-                        raise CheckFileParser.ParsingException("{directive} must have a CHECK{check} or CHECK{checkNext} directive before it instead of a {bad}".format(
-                                                                directive=directive,
-                                                                check=Check.directiveToken(),
-                                                                checkNext=CheckNext.directiveToken(),
-                                                                bad=before)
-                                                              )
 
 class CheckNot(RegexDirective):
     RegexLocationTuple = collections.namedtuple('RegexLocationTuple',['Regex','SourceLocation'])
@@ -237,21 +202,3 @@ class CheckNot(RegexDirective):
 
     def getErrorMessage(self):
         return 'Found a match for ' + str(self) + ' in {location}'.format(location=str(self.matchLocation))
-
-    @staticmethod
-    def validate(directiveList):
-        """
-            We should enforce for every CHECK-NOT directive that the next directive (if it exists) is
-            a CHECK directive
-        """
-        last = len(directiveList) -1
-        for (index,directive) in enumerate(directiveList):
-            if isinstance(directive, CheckNot):
-                if index < last:
-                    after = directiveList[index +1]
-                    if not isinstance(after, Check):
-                        raise CheckFileParser.ParsingException("{directive} must have a CHECK{check} directive after it instead of a {bad}".format(
-                                                                directive=directive,
-                                                                check=Check.directiveToken(),
-                                                                bad=after)
-                                                               )

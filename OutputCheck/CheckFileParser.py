@@ -83,15 +83,47 @@ class CheckFileParser:
 
             lineNumber += 1
 
-        self.validateDirectives(directiveObjects, checkFile.name)
+        self._validateDirectives(directiveObjects, checkFile.name)
         return directiveObjects
 
-    def validateDirectives(self, directiveObjects, checkFileName):
+    def _validateDirectives(self, directiveList, checkFileName):
 
-        if len(directiveObjects) == 0:
+        if len(directiveList) == 0:
             raise ParsingException("'{file}' does not contain any CHECK directives".format(file=checkFileName))
 
-        dTypes = set( [ d.__class__ for d in directiveObjects ] )
-        for dType in dTypes:
-            _logger.debug("Applying {dtype}'s validation rules".format(dtype=dType))
-            dType.validate(directiveObjects)
+        from . import Directives
+        """
+            We should enforce that every CHECK-NEXT directive in the list (apart from if it
+            is the first directive) should have a CHECK or CHECK-NEXT before it.
+
+            * CHECK-NEXT is the first directive
+            * CHECK-NEXT either has a CHECK or a CHECK-NEXT before it
+
+        """
+        for (index,directive) in enumerate(directiveList):
+            if isinstance(directive, Directives.CheckNext):
+                if index > 0:
+                    before = directiveList[index -1]
+                    if not (isinstance(before, Directives.CheckNext) or isinstance(before, Directives.Check)):
+                        raise ParsingException("{directive} must have a CHECK{check} or CHECK{checkNext} directive before it instead of a {bad}".format(
+                                                  directive=directive,
+                                                  check=Directives.Check.directiveToken(),
+                                                  checkNext=Directives.CheckNext.directiveToken(),
+                                                  bad=before)
+                                              )
+
+        """
+            We should enforce for every CHECK-NOT directive that the next directive (if it exists) is
+            a CHECK directive
+        """
+        last = len(directiveList) -1
+        for (index,directive) in enumerate(directiveList):
+            if isinstance(directive, Directives.CheckNot):
+                if index < last:
+                    after = directiveList[index +1]
+                    if not isinstance(after, Directives.Check):
+                        raise ParsingException("{directive} must have a CHECK{check} directive after it instead of a {bad}".format(
+                                                  directive=directive,
+                                                  check=Directives.Check.directiveToken(),
+                                                  bad=after)
+                                              )
