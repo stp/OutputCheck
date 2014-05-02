@@ -2,6 +2,7 @@ import collections
 import logging
 import pprint
 import re
+from .Utils import isA
 # Cannot import Directives here due to circular dependencies
 
 _logger = logging.getLogger(__name__)
@@ -97,16 +98,20 @@ class CheckFileParser:
             is the first directive) should have a CHECK or CHECK-NEXT before it.
 
             * CHECK-NEXT is the first directive
-            * CHECK-NEXT either has a CHECK or a CHECK-NEXT before it
+            * CHECK-NEXT either has one of the following directives before it CHECK, CHECK-NEXT or CHECK-L
 
         """
+        supportedDirectives = [Directives.CheckNext, Directives.Check, Directives.CheckLiteral]
         for (index,directive) in enumerate(directiveList):
             if isinstance(directive, Directives.CheckNext):
                 if index > 0:
                     before = directiveList[index -1]
-                    if not (isinstance(before, Directives.CheckNext) or isinstance(before, Directives.Check)):
-                        raise ParsingException("{directive} must have a CHECK{check} or CHECK{checkNext} directive before it instead of a {bad}".format(
+
+                    if not isA(before, supportedDirectives):
+                        requiredTypes = " or ".join( [ "CHECK{suffix}".format(suffix=d.directiveToken()) for d in supportedDirectives])
+                        raise ParsingException("{directive} must have a {requiredTypes} directive before it instead of a {bad}".format(
                                                   directive=directive,
+                                                  requiredTypes=requiredTypes,
                                                   check=Directives.Check.directiveToken(),
                                                   checkNext=Directives.CheckNext.directiveToken(),
                                                   bad=before)
@@ -114,16 +119,19 @@ class CheckFileParser:
 
         """
             We should enforce for every CHECK-NOT directive that the next directive (if it exists) is
-            a CHECK directive
+            a CHECK or CHECK-L directive
         """
         last = len(directiveList) -1
+        supportedDirectives = [ Directives.Check, Directives.CheckLiteral ]
         for (index,directive) in enumerate(directiveList):
             if isinstance(directive, Directives.CheckNot):
                 if index < last:
                     after = directiveList[index +1]
-                    if not isinstance(after, Directives.Check):
-                        raise ParsingException("{directive} must have a CHECK{check} directive after it instead of a {bad}".format(
+                    if not isA(after, supportedDirectives):
+                        requiredTypes = " or ".join( [ "CHECK{suffix}".format(suffix=d.directiveToken()) for d in supportedDirectives])
+                        raise ParsingException("{directive} must have a {requiredTypes} directive after it instead of a {bad}".format(
                                                   directive=directive,
+                                                  requiredTypes=requiredTypes,
                                                   check=Directives.Check.directiveToken(),
                                                   bad=after)
                                               )
