@@ -152,6 +152,29 @@ class CheckNext(RegexDirective):
         return 'Could not find a match for {directive} expected at {location}'.format(directive=str(self), location=self.expectedMatchLocation)
 
 
+class CheckNextLiteral(LiteralDirective):
+    @staticmethod
+    def directiveToken():
+        return '-NEXT-L:'
+
+    def __init__(self, literal, sourceLocation):
+        super(CheckNextLiteral,self).__init__(literal, sourceLocation)
+        self.expectedMatchLocation = None
+
+    def match(self, line, positionOfLine, fileName):
+        self.expectedMatchLocation = CheckFileParser.FileLocation(fileName, positionOfLine)
+
+        column = line.find(self.literal)
+        if column == -1:
+            self.failed = True
+            raise DirectiveException(self)
+        else:
+            self.matchLocation = self.expectedMatchLocation
+            _logger.debug('Found match for {literal} at {location}'.format(literal=self.literal, location=self.matchLocation))
+
+    def getErrorMessage(self):
+        return 'Could not find a match for {directive} expected at {location}'.format(directive=str(self), location=self.expectedMatchLocation)
+
 class CheckNot(RegexDirective):
     RegexLocationTuple = collections.namedtuple('RegexLocationTuple',['Regex','SourceLocation'])
     def __init__(self, pattern, sourceLocation):

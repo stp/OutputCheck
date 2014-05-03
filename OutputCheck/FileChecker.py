@@ -50,7 +50,7 @@ class FileChecker(object):
                     continue
                 else:
                     raise Exception('Internal Error')
-            elif isinstance(checker, Directives.CheckNext):
+            elif isA(checker, [Directives.CheckNext, Directives.CheckNextLiteral]):
                 checker.match(lines[lineNum], lineNum + 1, fileObject.name)
                 lineNum = min(lineNum +1, end)
             else:
