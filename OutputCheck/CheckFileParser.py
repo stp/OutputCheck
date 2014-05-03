@@ -94,14 +94,14 @@ class CheckFileParser:
 
         from . import Directives
         """
-            We should enforce that every CHECK-NEXT directive in the list (apart from if it
-            is the first directive) should have a CHECK or CHECK-NEXT before it.
+            We should enforce that every CHECK-NEXT directive in the list:
 
             * CHECK-NEXT is the first directive
-            * CHECK-NEXT either has one of the following directives before it CHECK, CHECK-NEXT or CHECK-L
+            OR
+            * CHECK-NEXT either has one of the following directives before it CHECK, CHECK-NEXT, CHECK-L, CHECK-NEXT-L
 
         """
-        supportedDirectives = [Directives.CheckNext, Directives.Check, Directives.CheckLiteral]
+        supportedDirectives = [Directives.CheckNext, Directives.Check, Directives.CheckLiteral, Directives.CheckNextLiteral]
         for (index,directive) in enumerate(directiveList):
             if isinstance(directive, Directives.CheckNext):
                 if index > 0:
