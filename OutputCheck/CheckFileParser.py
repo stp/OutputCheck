@@ -94,30 +94,6 @@ class CheckFileParser:
 
         from . import Directives
         """
-            We should enforce that every CHECK-NEXT directive in the list:
-
-            * CHECK-NEXT is the first directive
-            OR
-            * CHECK-NEXT either has one of the following directives before it CHECK, CHECK-NEXT, CHECK-L, CHECK-NEXT-L
-
-        """
-        supportedDirectives = [Directives.CheckNext, Directives.Check, Directives.CheckLiteral, Directives.CheckNextLiteral]
-        for (index,directive) in enumerate(directiveList):
-            if isinstance(directive, Directives.CheckNext):
-                if index > 0:
-                    before = directiveList[index -1]
-
-                    if not isA(before, supportedDirectives):
-                        requiredTypes = " or ".join( [ "CHECK{suffix}".format(suffix=d.directiveToken()) for d in supportedDirectives])
-                        raise ParsingException("{directive} must have a {requiredTypes} directive before it instead of a {bad}".format(
-                                                  directive=directive,
-                                                  requiredTypes=requiredTypes,
-                                                  check=Directives.Check.directiveToken(),
-                                                  checkNext=Directives.CheckNext.directiveToken(),
-                                                  bad=before)
-                                              )
-
-        """
             We should enforce for every CHECK-NOT directive that the next directive (if it exists) is
             a CHECK or CHECK-L directive
         """
