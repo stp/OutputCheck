@@ -178,10 +178,8 @@ class CheckNextLiteral(LiteralDirective):
 class CheckNot(RegexDirective):
     RegexLocationTuple = collections.namedtuple('RegexLocationTuple',['Regex','SourceLocation'])
     def __init__(self, pattern, sourceLocation):
-        if not isinstance(pattern,str):
-            raise Exception('pattern must be a string')
-
-        self.regex = [ self.RegexLocationTuple(Regex=re.compile(pattern), SourceLocation=sourceLocation) ]
+        self.regex = []
+        self.addPattern(pattern, sourceLocation)
         self.matchLocation = None
 
     @staticmethod
@@ -197,7 +195,7 @@ class CheckNot(RegexDirective):
     def match(self, subsetLines, offsetOfSubset, fileName):
         """
             Search through lines for match.
-            Raise an Exception if a match 
+            Raise an Exception if a match
         """
         for (offset,l) in enumerate(subsetLines):
             for t in self.regex:
