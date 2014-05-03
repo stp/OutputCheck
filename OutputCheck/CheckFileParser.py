@@ -66,8 +66,8 @@ class CheckFileParser:
                 if m != None:
                     location = FileLocation(checkFile.name, lineNumber)
 
-                    if ( len(directiveObjects) > 0 and 
-                         isinstance(directiveObjects[-1], Directives.CheckNot) and 
+                    if ( len(directiveObjects) > 0 and
+                         isinstance(directiveObjects[-1], Directives.CheckNot) and
                          d.Class == Directives.CheckNot
                        ):
                         # Do not allow consecutive CHECK-NOT directives, just add
@@ -77,6 +77,17 @@ class CheckFileParser:
                                                                                                                   line=lineNumber,
                                                                                                                   pattern=m.group(1),
                                                                                                                   directive=directiveObjects[-1]))
+                    elif ( len(directiveObjects) > 0 and
+                         isinstance(directiveObjects[-1], Directives.CheckNotLiteral) and
+                         d.Class == Directives.CheckNotLiteral
+                       ):
+                        # Do not allow consecutive CHECK-NOT-L directives, just add
+                        # literal to previous CHECK-NOT-L
+                        directiveObjects[-1].addLiteral(m.group(1), location)
+                        _logger.debug('{file}:{line} : Added Literal {literal} to directive\n{directive}'.format(file=checkFile.name,
+                                                                                                                 line=lineNumber,
+                                                                                                                 literal=m.group(1),
+                                                                                                                 directive=directiveObjects[-1]))
                     else:
                         # Create new Directive Object with a pattern (as string)
                         directiveObjects.append( d.Class(m.group(1), location) )
@@ -94,13 +105,13 @@ class CheckFileParser:
 
         from . import Directives
         """
-            We should enforce for every CHECK-NOT directive that the next directive (if it exists) is
+            We should enforce for every CHECK-NOT and CHECK-NOT-L directive that the next directive (if it exists) is
             a CHECK or CHECK-L directive
         """
         last = len(directiveList) -1
         supportedDirectives = [ Directives.Check, Directives.CheckLiteral ]
         for (index,directive) in enumerate(directiveList):
-            if isinstance(directive, Directives.CheckNot):
+            if isA(directive, [Directives.CheckNot, Directives.CheckNotLiteral]):
                 if index < last:
                     after = directiveList[index +1]
                     if not isA(after, supportedDirectives):

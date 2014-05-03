@@ -223,3 +223,53 @@ class CheckNot(RegexDirective):
 
     def getErrorMessage(self):
         return 'Found a match for ' + str(self) + ' in {location}'.format(location=str(self.matchLocation))
+
+class CheckNotLiteral(LiteralDirective):
+    LiteralLocationTuple = collections.namedtuple('LiteralLocationTuple',['Literal','SourceLocation'])
+    def __init__(self, literal, sourceLocation):
+        self.literals = []
+        self.addLiteral(literal, sourceLocation)
+        self.matchLocation = None
+        self.literal = None # We aren't using this
+
+    @staticmethod
+    def directiveToken():
+        return '-NOT-L:'
+
+    def addLiteral(self, literal, sourceLocation):
+        if not isinstance(literal,str):
+            raise Exception('literal must be a string')
+
+        self.literals.append( self.LiteralLocationTuple(Literal=literal, SourceLocation=sourceLocation) )
+
+    def match(self, subsetLines, offsetOfSubset, fileName):
+        """
+            Search through lines for match.
+            Raise an Exception if a match
+        """
+        for (offset,l) in enumerate(subsetLines):
+            for literal in self.literals:
+                column = l.find(literal.Literal)
+                if column != -1:
+                    truePosition = offset + offsetOfSubset
+                    _logger.debug('Found match on line {line}, column {col}'.format(line=str(truePosition+ 1), col=column))
+                    _logger.debug('Line is {}'.format(l))
+                    self.failed = True
+                    self.matchLocation = CheckFileParser.FileLocation(fileName, truePosition +1)
+                    raise DirectiveException(self)
+
+    def __str__(self):
+        s = self.getName() + ' Directive ('
+        for (index,p) in enumerate(self.literals):
+            s += "{file}:{line} : Literal: '{literal}'".format(file=p.SourceLocation.fileName, line=p.SourceLocation.lineNumber, literal=p.Literal)
+
+            if index < (len(self.literals) -1):
+                # Comma for all but last in list
+                s+= ', '
+
+            s += ")"
+
+        return s
+
+    def getErrorMessage(self):
+        return 'Found a match for ' + str(self) + ' in {location}'.format(location=str(self.matchLocation))

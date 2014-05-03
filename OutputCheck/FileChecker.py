@@ -26,8 +26,8 @@ class FileChecker(object):
             if isA(checker, [ Directives.Check, Directives.CheckLiteral]):
                 offset = checker.match(lines[lineNum:end], lineNum, fileObject.name)
                 lineNum = min(offset +1, end) # Start next search from next line
-            elif isinstance(checker, Directives.CheckNot):
-                # We need to know the region that CheckNot should search
+            elif isA(checker, [Directives.CheckNot, Directives.CheckNotLiteral]):
+                # We need to know the region that CheckNot/CheckNotLiteral should search.
                 # We assume that either there are no other Directives after this one
                 # or the next directive is a Check Directive
 
