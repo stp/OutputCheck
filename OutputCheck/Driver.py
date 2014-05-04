@@ -40,6 +40,7 @@ def main(args):
     parser.add_argument("-l","--log-level",type=str, default="INFO", choices=['debug','info','warning','error'])
     parser.add_argument('--comment=',type=str, default="", help='Force one line comment value. Default guess from file extension of check_file')
     parser.add_argument('-d','--dump-file-to-check', default=False, action='store_true', help='Print file-to-check contents')
+    parser.add_argument('--disable-substitutions', default=False, action='store_true', help='Disable ${LINE} style substitutions')
     args = parser.parse_args(args[1:])
 
     logLevel = getattr(logging,args.log_level.upper(),None)
@@ -73,7 +74,7 @@ def main(args):
 
         _logger.debug("Line comment prefix is '{}'".format(lineCommentPrefix))
         checkFileParser = CheckFileParser.CheckFileParser(checkDirectivePrefix, lineCommentPrefix)
-        FC = FileChecker.FileChecker(checkFileParser.parse(checkFile))
+        FC = FileChecker.FileChecker(checkFileParser.parse(checkFile, not args.disable_substitutions))
         FC.check(fileToCheck)
         printInput()
     except CheckFileParser.ParsingException as e:
