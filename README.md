@@ -68,8 +68,8 @@ regular expression.
 
 The following directives are supported
 
-CHECK: <regex>
---------------
+CHECK: ``<regex>``
+------------------
 
 This declares that that regular expression ``<regex>`` should match somewhere
 on a single line. This match must occur after previously declared Check directives.
@@ -128,8 +128,8 @@ $ ./BrokenHelloWorld | OutputCheck BrokenHelloWorld.c
 ERROR: Could not find a match for Check Directive (BrokenHelloWorld.c:8 Pattern: 'Hello World')
 ```
 
-CHECK-L: <string>
---------
+CHECK-L: ``<string>``
+---------------------
 
 This is the string literal version of the ``CHECK:`` directive. This is identical to the ``CHECK:`` directive except that ``<string>`` is a literal string rather than a regular expression. This is useful if using python's regular expression syntax is too cumbersome.
 
@@ -142,8 +142,8 @@ For example
 
 the above directives are equivalent but the ``CHECK-L:`` is much easier to write.
 
-CHECK-NEXT: <regex>
--------------------
+CHECK-NEXT: ``<regex>``
+-----------------------
 
 This declares that the next line after the previous match must match the regular expression ``<regex>``. If there was no previous directive then ``CHECK-NEXT:`` matches the first line of the tool's output.
 
@@ -194,13 +194,13 @@ $ ./BrokenHelloWorld2 | OutputCheck BrokenHelloWorld2.c
 ERROR: Could not find a match for CheckNext Directive (BrokenHelloWorld2.c:10 Pattern: 'Goodbye') expected at <stdin>:2
 ```
 
-CHECK-NEXT-L: <string>
-----------------------
+CHECK-NEXT-L: ``<string>``
+--------------------------
 
 This is the string literal version of the ``CHECK-NEXT:`` directive. This is identical to the ``CHECK-NEXT:`` directive except that ``<string>`` is a literal string rather than a regular expression. This is useful if using python's regular expression syntax is too cumbersome.
 
-CHECK-NOT: <regex>
-------------------
+CHECK-NOT: ``<regex>``
+----------------------
 
 This declares that between the previous match (if there is none, search starts from the first line of tool's output) and the next match (if there is none the search will search to the end of the tool's output) that no line will match the regular expression ``<regex>``.
 
@@ -252,8 +252,8 @@ $ ./BrokenHelloWorld3 | OutputCheck BrokenHelloWorld3.c
 ERROR: Found a match for CheckNot Directive (BrokenHelloWorld3.c:8 : Pattern: 'Testing') in <stdin>:2
 ```
 
-CHECK-NOT-L: <string>
----------------------
+CHECK-NOT-L: ``<string>``
+-------------------------
 
 This is the string literal version of the ``CHECK-NOT:`` directive. This is identical to the ``CHECK-NOT:`` directive except that ``<string>`` is a literal string rather than a regular expression. This is useful if using python's regular expression syntax is too cumbersome.
 
