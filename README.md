@@ -128,6 +128,20 @@ $ ./BrokenHelloWorld | OutputCheck BrokenHelloWorld.c
 ERROR: Could not find a match for Check Directive (BrokenHelloWorld.c:8 Pattern: 'Hello World')
 ```
 
+CHECK-L: <string>
+--------
+
+This is the string literal version of the ``CHECK:`` directive. This is identical to the ``CHECK:`` directive except that ``<string>`` is a literal string rather than a regular expression. This is useful if using python's regular expression syntax is too cumbersome.
+
+For example
+
+```
+// CHECK: foo\.c\(5\) '\*' is not a valid identifier\.
+// CHECK-L: foo.c(5) '*' is not a valid identifier.
+```
+
+the above directives are equivalent but the ``CHECK-L:`` is much easier to write.
+
 CHECK-NEXT: <regex>
 -------------------
 
@@ -179,6 +193,11 @@ $ cc BrokenHelloWorld2.c -o BrokenHelloWorld2
 $ ./BrokenHelloWorld2 | OutputCheck BrokenHelloWorld2.c
 ERROR: Could not find a match for CheckNext Directive (BrokenHelloWorld2.c:10 Pattern: 'Goodbye') expected at <stdin>:2
 ```
+
+CHECK-NEXT-L: <string>
+----------------------
+
+This is the string literal version of the ``CHECK-NEXT:`` directive. This is identical to the ``CHECK-NEXT:`` directive except that ``<string>`` is a literal string rather than a regular expression. This is useful if using python's regular expression syntax is too cumbersome.
 
 CHECK-NOT: <regex>
 ------------------
@@ -232,6 +251,12 @@ $ cc BrokenHelloWorld3.c -o BrokenHelloWorld3
 $ ./BrokenHelloWorld3 | OutputCheck BrokenHelloWorld3.c
 ERROR: Found a match for CheckNot Directive (BrokenHelloWorld3.c:8 : Pattern: 'Testing') in <stdin>:2
 ```
+
+CHECK-NOT-L: <string>
+---------------------
+
+This is the string literal version of the ``CHECK-NOT:`` directive. This is identical to the ``CHECK-NOT:`` directive except that ``<string>`` is a literal string rather than a regular expression. This is useful if using python's regular expression syntax is too cumbersome.
+
 
 Tests
 =====
