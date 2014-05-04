@@ -257,6 +257,57 @@ CHECK-NOT-L: ``<string>``
 
 This is the string literal version of the ``CHECK-NOT:`` directive. This is identical to the ``CHECK-NOT:`` directive except that ``<string>`` is a literal string rather than a regular expression. This is useful if using python's regular expression syntax is too cumbersome.
 
+Substitutions
+=============
+
+For convenience several substitutions are provided for use in ``OutputCheck``. These substitutions can used in ``<regex>`` or ``<string>`` for all the check directives. All directives can be escaped by prepending ``\``.
+
+``${LINE}``
+-----------
+
+This is substituted by the line number that the check directive is on in the check file.
+
+```
+// CHECK-L : file.c(${LINE})
+```
+
+``${LINE:+N}``
+--------------
+
+This is substituted by the line number that the check directive is on in the check file plus an offset (``N``).
+
+
+```
+// CHECK-L : file.c(${LINE:+5})
+```
+
+``${LINE:-N}``
+--------------
+
+This is substituted by the line number that the check directive is on in the check file minus an offset (``N``).
+
+
+```
+// CHECK-L : file.c(${LINE:-5})
+```
+
+``${CHECKFILE_NAME}``
+---------------------
+
+This is substituted by the name of the check file.
+
+```
+// CHECK-L : ${CHECKFILE_NAME}(5)
+```
+
+``${CHECKFILE_ABS_PATH}``
+---------------------
+
+This is substituted by the absolute path to check file.
+
+```
+// CHECK-L : ${CHECKFILE_ABS_PATH}(5)
+```
 
 Tests
 =====
