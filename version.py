@@ -97,7 +97,7 @@ def get_git_version(abbrev=4):
 
     # Finally, return the current version.
 
-    return version
+    return version.decode() # Get str from bytes for Python 3.x
 
 
 if __name__ == "__main__":
