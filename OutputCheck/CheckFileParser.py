@@ -1,5 +1,6 @@
 import collections
 import logging
+import os
 import pprint
 import re
 from .Utils import isA
@@ -132,14 +133,17 @@ class CheckFileParser:
 
     def _substituteCheckPattern(self, inputString, lineNumber, lastLineNumber, checkFileName):
         """
-        Do ${LINE}, ${LINE:+N}, and ${LINE:-N} substitutions.
-        To escape prepend with slash
+        Do various ${} substitutions
         """
         assert isinstance(inputString, str)
         assert isinstance(lineNumber, int)
         assert isinstance(lastLineNumber, int)
         assert isinstance(checkFileName, str)
 
+        """
+        Do ${LINE}, ${LINE:+N}, and ${LINE:-N} substitutions.
+        To escape prepend with slash
+        """
         sPattern = r'\$\{LINE(\:(?P<sign>\+|-)(?P<offset>\d+))?\}'
         matcher = re.compile(sPattern)
         result = ""
@@ -192,6 +196,48 @@ class CheckFileParser:
 
                     start = min(m.end(),end)
                     _logger.debug('Next search is {start}:{end} = "{ss}"'.format(start=start, end=end, ss=inputString[start:end]))
+
+        """
+        Do simple ${...} substitutions
+        """
+
+        # Do ${CHECKFILE_NAME} substitution
+        result = self._simpleSubstitution("CHECKFILE_NAME", os.path.basename(checkFileName), result)
+
+        # Do ${CHECKFILE_ABS_PATH} substitution
+        result = self._simpleSubstitution("CHECKFILE_ABS_PATH", os.path.abspath(checkFileName), result)
+
+        assert len(result) != 0
+        return result
+
+    def _simpleSubstitution(self, name, replacement, inputString):
+        assert isinstance(name, str)
+        assert isinstance(replacement, str)
+        assert isinstance(inputString, str)
+        stringToMatch = '${' + name + '}'
+        result = ""
+        start = 0
+        end = len(inputString)
+
+        while True:
+            pos = inputString.find(stringToMatch, start, end)
+            if pos == -1:
+                # No match found
+                result += inputString[start:end]
+                break
+            else:
+                # Check for escaping slash
+                posBefore=max(0, pos -1)
+                if inputString[posBefore] == "\\":
+                    # Escaped
+                    result += inputString[start:posBefore] # Copy before \${...}
+                    result += inputString[(posBefore+1): (pos + len(stringToMatch))] # Copy ${...}, note skipping slash
+                    start = min(pos + len(stringToMatch), end)
+                else:
+                    # Do substitution
+                    result += inputString[start:pos] # Copy before ${...}
+                    result += replacement
+                    start = min(pos + len(stringToMatch), end)
 
         assert len(result) != 0
         return result
