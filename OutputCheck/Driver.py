@@ -96,3 +96,10 @@ def main(args):
         return ExitCode.USER_EXIT
 
     return ExitCode.SUCCESS
+
+def scriptEntryPoint():
+    """
+    This provides an entry point for disutils
+    """
+    import sys
+    return main(sys.argv)

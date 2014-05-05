@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 import version
 
 setup(name='OutputCheck',
@@ -10,7 +10,6 @@ setup(name='OutputCheck',
       author_email='delcypher@gmail.com',
       url='https://github.com/stp/OutputCheck',
       packages=['OutputCheck'],
-      scripts=['bin/OutputCheck'],
       classifiers=[ 'Environment :: Console',
                     'Development Status :: 3 - Alpha',
                     'Intended Audience :: Developers',
@@ -23,5 +22,6 @@ setup(name='OutputCheck',
                     'Topic :: Text Processing',
                     'Topic :: Utilities'
                   ],
-      long_description=open('pypi_description.rst','r').read()
+      long_description=open('pypi_description.rst','r').read(),
+      entry_points = { 'console_scripts': ['OutputCheck=OutputCheck.Driver:scriptEntryPoint'] }
      )
