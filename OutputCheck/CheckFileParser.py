@@ -69,7 +69,7 @@ class CheckFileParser:
                 m = d.Regex.match(line)
                 if m != None:
                     if doSubstitutions:
-                        checkPattern = self._substituteCheckPattern(m.group(1), lineNumber, len(lines), checkFile.name)
+                        checkPattern = self._substituteCheckPattern(m.group(1), lineNumber, len(lines), checkFile.name, not issubclass(d.Class, Directives.LiteralDirective))
                     else:
                         checkPattern = m.group(1)
                     location = FileLocation(checkFile.name, lineNumber)
@@ -131,7 +131,7 @@ class CheckFileParser:
                                                   bad=after)
                                               )
 
-    def _substituteCheckPattern(self, inputString, lineNumber, lastLineNumber, checkFileName):
+    def _substituteCheckPattern(self, inputString, lineNumber, lastLineNumber, checkFileName, isForRegex):
         """
         Do various ${} substitutions
         """
@@ -201,11 +201,20 @@ class CheckFileParser:
         Do simple ${...} substitutions
         """
 
+
         # Do ${CHECKFILE_NAME} substitution
-        result = self._simpleSubstitution("CHECKFILE_NAME", os.path.basename(checkFileName), result)
+        basenameCheckFileName = os.path.basename(checkFileName)
+        assert basenameCheckFileName.count('\\') == 0
+        result = self._simpleSubstitution("CHECKFILE_NAME", basenameCheckFileName, result)
 
         # Do ${CHECKFILE_ABS_PATH} substitution
-        result = self._simpleSubstitution("CHECKFILE_ABS_PATH", os.path.abspath(checkFileName), result)
+        abspathCheckFileName = os.path.abspath(checkFileName)
+        if isForRegex:
+            # Note slash substitution is for Windows paths (e.g. "c:\mything\foo.txt") which can break regexes if we don't
+            # correctly escape them.
+            abspathCheckFileName = abspathCheckFileName.replace('\\', '\\\\')
+
+        result = self._simpleSubstitution("CHECKFILE_ABS_PATH", abspathCheckFileName, result)
 
         assert len(result) != 0
         return result
