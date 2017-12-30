@@ -7,6 +7,7 @@ import re
 extensionToCommentSymbolMap = {
     'bpl':'//',
     'c':'//',
+    'cc':'//',
     'cpp':'//',
     'cvc':'%',
     'cxx':'//',
