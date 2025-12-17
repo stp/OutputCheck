@@ -44,9 +44,9 @@ class CheckFileParser:
 
             if getattr(object,'directiveToken',None) != None:
                 # Found a match
-                directives.append( directive( Regex=re.compile(directivePrefix + 
-                                                               object.directiveToken() + 
-                                                               '\s*' + # Ignore all whitespace after directive
+                directives.append( directive( Regex=re.compile(directivePrefix +
+                                                               object.directiveToken() +
+                                                               r'\s*' + # Ignore all whitespace after directive
                                                                patternRegex),
                                               Class=object
                                             ) 
