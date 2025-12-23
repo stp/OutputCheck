@@ -30,8 +30,6 @@ ExitCode = enum('SUCCESS',
                 'USER_EXIT'
                )
 
-
-
 def main(args):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('check_file', type=argparse.FileType('r'), help='File containing check commands')
